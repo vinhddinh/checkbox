@@ -1,15 +1,16 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { Button, ListGroup, ListGroupItem } from "react-bootstrap";
-import CheckListItem from "../components/CheckList";
+import NavBar from "../components/Navbar";
+import CheckList from "../components/CheckList";
 
 export default function Home() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   var item = {
     text: "This is a test",
     isComplete: false,
   };
+  var items = [item, item, item, item, item, item, item, item, item, item];
   return (
     <div className={styles.container}>
       <Head>
@@ -19,10 +20,8 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <Button onClick={() => signIn("github")}>Sign in with GitHub</Button>
-        <ListGroup>
-          <CheckListItem item={item} />
-        </ListGroup>
+        <NavBar session={session} />
+        <CheckList items={items} />
       </main>
     </div>
   );
