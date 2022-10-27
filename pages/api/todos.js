@@ -6,7 +6,7 @@ export default async function handle(req, res) {
       try {
         const todos = await prisma.todo.findMany({
           where: {
-            id: parseInt(req.query.id,
+            id: parseInt(req.query.id),
           },
         });
         res.status(200).json(todos);
