@@ -24,11 +24,14 @@ export default async function handle(req, res) {
         });
         res.status(201).json(user);
       } catch (e) {
-        res.status(500).json({ error: e });
+        if (e.code === "P2002") {
+          res.status(409).json({ error: "User already exists" });
+        } else {
+          res.status(500).json({ error: e });
+        }
       }
       break;
     case "PUT":
-      console.log(req.body);
       try {
         const user = await prisma.user.update({
           where: {
