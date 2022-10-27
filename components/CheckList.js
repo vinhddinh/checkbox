@@ -10,16 +10,9 @@ export function CheckListItem({ item }) {
 
   return (
     <ListGroupItem className="d-flex justify-content-between align-items-center border-start-0 border-top-0 border-end-0 border-bottom rounded-0 mb-2">
-      <div class="d-flex align-items-center">
-        <input
-          class="form-check-input me-2"
-          type="checkbox"
-          defaultChecked={isComplete}
-          onClick={onChangeCheckBox}
-        />
-        <span class={isComplete ? "text-decoration-line-through" : ""}>
-          {item.title}
-        </span>
+      <div className="d-flex align-items-center">
+        <CheckBox defaultChecked={isComplete} onChange={onChangeCheckBox} />
+        <InlineEdit value={item.title} setValue={() => {}} />
       </div>
     </ListGroupItem>
   );
@@ -30,9 +23,52 @@ export default function CheckList({ items }) {
     <Container>
       <ListGroup>
         {items.map((item) => (
-          <CheckListItem item={item} />
+          <CheckListItem item={item} key={item.id} />
         ))}
       </ListGroup>
     </Container>
   );
 }
+
+function CheckBox({ defaultChecked, onChange }) {
+  // checkbox without highlighting
+  return (
+    <input
+      className="form-check-input me-2"
+      type="checkbox"
+      defaultChecked={defaultChecked}
+      onClick={onChange}
+    />
+  );
+}
+
+const InlineEdit = ({ value, setValue }) => {
+  const [editingValue, setEditingValue] = useState(value);
+
+  const onChange = (event) => setEditingValue(event.target.value);
+
+  const onKeyDown = (event) => {
+    if (event.key === "Enter" || event.key === "Escape") {
+      event.target.blur();
+    }
+  };
+
+  const onBlur = (event) => {
+    if (event.target.value.trim() === "") {
+      setEditingValue(value);
+    } else {
+      setValue(event.target.value);
+    }
+  };
+
+  return (
+    <input
+      type="text"
+      aria-label="Field name"
+      value={editingValue}
+      onChange={onChange}
+      onKeyDown={onKeyDown}
+      onBlur={onBlur}
+    />
+  );
+};
