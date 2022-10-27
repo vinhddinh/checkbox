@@ -4,7 +4,11 @@ export default async function handle(req, res) {
   switch (req.method) {
     case "GET":
       try {
-        const todos = await prisma.todo.findMany();
+        const todos = await prisma.todo.findMany({
+          where: {
+            id: parseInt(req.query.id,
+          },
+        });
         res.status(200).json(todos);
       } catch (e) {
         res.status(500).json({ error: e });
