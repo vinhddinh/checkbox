@@ -5,7 +5,6 @@ export function CheckListItem({ item }) {
   const [isComplete, setIsComplete] = useState(item.isComplete);
 
   function onChangeCheckBox(event) {
-    console.log(event.target.checked);
     setIsComplete(event.target.checked);
   }
 
@@ -19,7 +18,7 @@ export function CheckListItem({ item }) {
           onClick={onChangeCheckBox}
         />
         <span class={isComplete ? "text-decoration-line-through" : ""}>
-          {item.text}
+          {item.title}
         </span>
       </div>
     </ListGroupItem>
