@@ -26,10 +26,8 @@ export function SignInOutButtton({ session }) {
 
 export function NavBarBrand({ session }) {
   if (session) {
-    return (
-      <Navbar.Brand className="display-3">{session.user.name}</Navbar.Brand>
-    );
+    return <Navbar.Brand>{session.user.name}</Navbar.Brand>;
   } else {
-    return <Navbar.Brand className="display-3">Public Checklist</Navbar.Brand>;
+    return <Navbar.Brand>Public Checklist</Navbar.Brand>;
   }
 }
