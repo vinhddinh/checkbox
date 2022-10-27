@@ -1,37 +1,35 @@
-import { Container, Navbar, Nav } from "react-bootstrap";
+import { Container, Navbar, Button } from "react-bootstrap";
 import { signIn, signOut } from "next-auth/react";
 
 export default function NavBar({ session }) {
   return (
-    <div class="align-items-center">
-      <Navbar bg="light" expand="lg">
-        <Container>
+    <>
+      <Navbar bg="light" expand="lg" fixed="top">
+        <Container className="justify-content-between">
           <NavBarBrand session={session} />
-          <Navbar.Toggle />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <SignInOutLink session={session} />
-            </Nav>
-          </Navbar.Collapse>
+          <SignInOutButtton session={session} className="justify-content-end" />
         </Container>
       </Navbar>
-    </div>
+    </>
   );
 }
 
-export function SignInOutLink({ session }) {
+export function SignInOutButtton({ session }) {
   if (session) {
-    return <Nav.Link onClick={() => signOut()}>Sign Out</Nav.Link>;
+    return <Button onClick={() => signOut()}>Sign Out</Button>;
   } else {
-    console.log("sign in");
-    return <Nav.Link onClick={() => signIn("github")}>Sign in</Nav.Link>;
+    return (
+      <Button onClick={() => signIn("github")}>Sign in with GitHub</Button>
+    );
   }
 }
 
 export function NavBarBrand({ session }) {
   if (session) {
-    return <Navbar.Brand href="#home">{session.user.name}</Navbar.Brand>;
+    return (
+      <Navbar.Brand className="display-3">{session.user.name}</Navbar.Brand>
+    );
   } else {
-    return <Navbar.Brand href="#home">Public Checklist</Navbar.Brand>;
+    return <Navbar.Brand className="display-3">Public Checklist</Navbar.Brand>;
   }
 }
