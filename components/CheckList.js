@@ -1,4 +1,4 @@
-import { ListGroup, ListGroupItem } from "react-bootstrap";
+import { ListGroup, ListGroupItem, Container } from "react-bootstrap";
 import { useState } from "react";
 
 export function CheckListItem({ item }) {
@@ -28,12 +28,12 @@ export function CheckListItem({ item }) {
 
 export default function CheckList({ items }) {
   return (
-    <div>
+    <Container>
       <ListGroup>
         {items.map((item) => (
           <CheckListItem item={item} />
         ))}
       </ListGroup>
-    </div>
+    </Container>
   );
 }
