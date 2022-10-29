@@ -1,18 +1,30 @@
 import { ListGroup, ListGroupItem, Container } from "react-bootstrap";
-import { useState } from "react";
+import { InlineEdit } from "/components";
+import { useState, useEffect } from "react";
 
-export function CheckListItem({ item }) {
-  const [isComplete, setIsComplete] = useState(item.isComplete);
+export function CheckListItem({ item, onBlur }) {
+  const [itemState, setItemState] = useState(item);
 
-  function onChangeCheckBox(event) {
-    setIsComplete(event.target.checked);
-  }
+  useEffect(() => {
+    console.log(itemState);
+  }, [itemState]);
 
   return (
     <ListGroupItem className="d-flex justify-content-between align-items-center border-start-0 border-top-0 border-end-0 border-bottom rounded-0 mb-2">
       <div className="d-flex align-items-center">
-        <CheckBox defaultChecked={isComplete} onChange={onChangeCheckBox} />
-        <InlineEdit value={item.title} setValue={() => {}} />
+        <CheckBox
+          defaultChecked={itemState.completed}
+          onChange={() => {
+            setItemState({ ...itemState, completed: !itemState.completed });
+          }}
+        />
+        <InlineEdit
+          value={item.title}
+          setValue={(value) => setItemState({ ...itemState, title: value })}
+          strikeThrough={itemState.completed}
+          onBlur={onBlur}
+        />
+        <span>{item.id}</span>
       </div>
     </ListGroupItem>
   );
@@ -41,34 +53,3 @@ function CheckBox({ defaultChecked, onChange }) {
     />
   );
 }
-
-const InlineEdit = ({ value, setValue }) => {
-  const [editingValue, setEditingValue] = useState(value);
-
-  const onChange = (event) => setEditingValue(event.target.value);
-
-  const onKeyDown = (event) => {
-    if (event.key === "Enter" || event.key === "Escape") {
-      event.target.blur();
-    }
-  };
-
-  const onBlur = (event) => {
-    if (event.target.value.trim() === "") {
-      setEditingValue(value);
-    } else {
-      setValue(event.target.value);
-    }
-  };
-
-  return (
-    <input
-      type="text"
-      aria-label="Field name"
-      value={editingValue}
-      onChange={onChange}
-      onKeyDown={onKeyDown}
-      onBlur={onBlur}
-    />
-  );
-};
