@@ -11,7 +11,10 @@ export default function Home() {
   const { data: session } = useSession();
   const [todos, setTodos] = useState([]);
 
-  const email = session?.user?.email || "test@example.com";
+  let email = session?.user?.email;
+  if (!email) {
+    email = "test@example.com";
+  }
 
   useEffect(() => {
     fetch(`/api/users/${email}/todos`).then((res) => {
