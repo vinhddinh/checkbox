@@ -1,32 +1,45 @@
 import { useState } from "react";
 
-export const InlineEdit = ({ value, setValue, strikeThrough }) => {
+export default function InlineEdit({ value, setValue, strikeThrough, onBlur }) {
   const [editingValue, setEditingValue] = useState(value);
 
   const onChange = (event) => setEditingValue(event.target.value);
 
   const onKeyDown = (event) => {
-    if (event.key === "Enter" || event.key === "Escape") {
+    if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
       event.target.blur();
     }
   };
 
-  const onBlur = (event) => {
+  const onInput = (event) => {
+    event.target.style.height = "";
+    event.target.style.height = event.target.scrollHeight + "px";
+  };
+
+  const onTextBlur = (event) => {
+    // guards against empty strings
     if (event.target.value.trim() === "") {
       setEditingValue(value);
     } else {
       setValue(event.target.value);
     }
+
+    // sends the value to the parent component
+    if (onBlur) {
+      onBlur(event.target.value);
+    }
   };
 
   return (
-    <input
-      type="text"
+    <textarea
+      rows="1"
+      aria-label="Field name"
       value={editingValue}
       onChange={onChange}
       onKeyDown={onKeyDown}
-      onBlur={onBlur}
+      onInput={onInput}
+      onBlur={onTextBlur}
       className={strikeThrough ? "text-decoration-line-through" : ""}
     />
   );
-};
+}
