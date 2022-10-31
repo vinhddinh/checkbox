@@ -45,7 +45,7 @@ export default async function handle(req, res) {
             completed: req.body.completed,
           },
         });
-        res.status(204);
+        res.status(204).json();
       } catch (e) {
         res.status(500).json({ error: e });
       }
