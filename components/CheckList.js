@@ -44,6 +44,7 @@ export function CheckListItem({ item, onBlur }) {
           }}
         />
         <InlineEdit
+          placeholder="New Task"
           value={item.title}
           setValue={(value) => setItemState({ ...itemState, title: value })}
           strikeThrough={itemState.completed}

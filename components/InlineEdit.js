@@ -1,6 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 
-export default function InlineEdit({ value, setValue, strikeThrough, onBlur }) {
+export default function InlineEdit({
+  value,
+  setValue,
+  strikeThrough,
+  onBlur,
+  placeholder,
+}) {
   const [editingValue, setEditingValue] = useState(value);
   const ref = useRef(null);
 
@@ -36,6 +42,7 @@ export default function InlineEdit({ value, setValue, strikeThrough, onBlur }) {
       rows="1"
       aria-label="Field name"
       value={editingValue}
+      placeholder={placeholder}
       onChange={onChange}
       onKeyDown={onKeyDown}
       onBlur={onTextBlur}
