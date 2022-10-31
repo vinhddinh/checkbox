@@ -5,6 +5,25 @@ import { useState, useEffect } from "react";
 export function CheckListItem({ item, onBlur }) {
   const [itemState, setItemState] = useState(item);
 
+  const updateItem = async () => {
+    const response = await fetch(`/api/todos?id=${itemState.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(itemState),
+    });
+  };
+
+  const deleteItem = async () => {
+    const res = await fetch(`/api/todos?id=${itemState.id}`, {
+      method: "DELETE",
+    });
+    if (res.status === 200) {
+      setItemState(null);
+    }
+  };
+
   useEffect(() => {
     console.log(itemState);
   }, [itemState]);
@@ -24,7 +43,17 @@ export function CheckListItem({ item, onBlur }) {
           strikeThrough={itemState.completed}
           onBlur={onBlur}
         />
-        <span>{item.id}</span>
+        <InlineEdit
+          placeholder="Description"
+          value={item.description}
+          setValue={(value) =>
+            setItemState({ ...itemState, description: value })
+          }
+          strikeThrough={itemState.completed}
+          onBlur={onBlur}
+        />
+        
+        <CloseButton onClick={deleteItem} />
       </div>
     </ListGroupItem>
   );
