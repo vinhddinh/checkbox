@@ -1,46 +1,57 @@
 import Head from "next/head";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import NavBar from "/components/Navbar";
 import CheckList from "/components/CheckList";
 import { Container, Row } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import prisma from "/prisma/client";
 
 import styles from "/styles/Home.module.css";
 
-export default function Home() {
+// load todos server side
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  const email = session ? session.user.email : "public@dinh.cc";
+
+  const todos = JSON.parse(
+    JSON.stringify(
+      await prisma.todo.findMany({
+        where: {
+          user: {
+            email: email,
+          },
+        },
+      })
+    )
+  );
+
+  return { props: { todos } };
+}
+
+export default function Home({ todos }) {
   const { data: session } = useSession();
-  const [todos, setTodos] = useState([]);
+  const [todosState, setTodosState] = useState(todos);
 
-  let email = session?.user?.email;
-  if (!email) {
-    email = "test@example.com";
-  }
+  useEffect(() => {}, [todosState]);
 
-  useEffect(() => {
-    fetch(`/api/users/${email}/todos`).then((res) => {
-      if (res.ok) {
-        res.json().then((todos) => {
-          setTodos(todos);
-        });
-      }
-    });
-  }, []);
-
-  function addTodo() {
-    setTodos([
-      ...todos,
-      {
-        title: "New Task",
-        description: "",
-        completed: false,
+  async function addTodo() {
+    const newTodoObj = {
+      title: "New Task",
+      description: "",
+      completed: false,
+      email: session?.user.email,
+    };
+    const response = await fetch("/api/todos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    ]);
-  }
-  // prints out checklist items on change
-  function onChange() {
-    console.log("1");
-  }
+      body: JSON.stringify(newTodoObj),
+    });
+    const TodoFromServer = await response.json();
 
+    setTodosState([...todosState, TodoFromServer]);
+  }
   return (
     <>
       <Head>
@@ -51,7 +62,7 @@ export default function Home() {
       <main className={styles.main}>
         <Container className="d-flex flex-column">
           <NavBar session={session} />
-          <CheckList items={todos} />
+          <CheckList items={todosState} session={session} />
           <Row className="whitespace" onClick={addTodo} />
         </Container>
       </main>
