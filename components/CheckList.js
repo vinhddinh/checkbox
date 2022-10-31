@@ -25,8 +25,14 @@ export function CheckListItem({ item, onBlur }) {
   };
 
   useEffect(() => {
-    console.log(itemState);
+    if (itemState?.id) {
+      updateItem();
+    }
   }, [itemState]);
+
+  if (!itemState) {
+    return null;
+  }
 
   return (
     <ListGroupItem className="d-flex justify-content-between align-items-center border-start-0 border-top-0 border-end-0 border-bottom rounded-0 mb-2">
