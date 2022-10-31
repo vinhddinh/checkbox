@@ -1,9 +1,31 @@
-import { ListGroup, ListGroupItem, Container } from "react-bootstrap";
-import { InlineEdit } from "/components";
+import {
+  ListGroup,
+  ListGroupItem,
+  Form,
+  Container,
+  Col,
+  CloseButton,
+} from "react-bootstrap";
+import InlineEdit from "/components/InlineEdit.js";
 import { useState, useEffect } from "react";
 
 export function CheckListItem({ item, onBlur }) {
   const [itemState, setItemState] = useState(item);
+  const timezoneOffset = new Date().getTimezoneOffset() * 60000;
+
+  useEffect(() => {
+    if (itemState?.id) {
+      updateItem();
+    }
+  }, [itemState]);
+
+  if (!itemState) {
+    return null;
+  }
+
+  const createdDate = new Date(new Date(itemState.createdAt) - timezoneOffset)
+    .toISOString()
+    .slice(0, 10);
 
   const updateItem = async () => {
     const response = await fetch(`/api/todos?id=${itemState.id}`, {
@@ -24,19 +46,16 @@ export function CheckListItem({ item, onBlur }) {
     }
   };
 
-  useEffect(() => {
-    if (itemState?.id) {
-      updateItem();
-    }
-  }, [itemState]);
-
-  if (!itemState) {
-    return null;
+  function dueDateSubmit(event) {
+    setItemState({
+      ...itemState,
+      dueDate: new Date(event.target.value).toISOString(),
+    });
   }
 
   return (
     <ListGroupItem className="d-flex justify-content-between align-items-center border-start-0 border-top-0 border-end-0 border-bottom rounded-0 mb-2">
-      <div className="d-flex align-items-center">
+      <Container className="d-flex justify-content-between align-items-center">
         <CheckBox
           defaultChecked={itemState.completed}
           onChange={() => {
@@ -59,9 +78,26 @@ export function CheckListItem({ item, onBlur }) {
           strikeThrough={itemState.completed}
           onBlur={onBlur}
         />
-        
-        <CloseButton onClick={deleteItem} />
-      </div>
+        <Col>
+          <Form.Control
+            type="date"
+            name="dueDate"
+            defaultValue={
+              itemState.dueDate
+                ? new Date(itemState.dueDate).toISOString().split("T")[0]
+                : ""
+            }
+            onChange={dueDateSubmit}
+          />
+          <Form.Control
+            type="date"
+            name="createdAt"
+            value={itemState.createdAt ? createdDate : ""}
+            disabled
+          />
+        </Col>
+      </Container>
+      <CloseButton onClick={deleteItem} />
     </ListGroupItem>
   );
 }
@@ -74,7 +110,7 @@ export default function CheckList({ items, session }) {
     <Container>
       <ListGroup>
         {items.map((item) => (
-          <CheckListItem item={item} key={item.id} />
+          <CheckListItem item={item} key={item.id} session={session} />
         ))}
       </ListGroup>
     </Container>
