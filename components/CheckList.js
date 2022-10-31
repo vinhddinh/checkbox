@@ -30,7 +30,10 @@ export function CheckListItem({ item, onBlur }) {
   );
 }
 
-export default function CheckList({ items }) {
+export default function CheckList({ items, session }) {
+  if (!items) {
+    return <div>loading...</div>;
+  }
   return (
     <Container>
       <ListGroup>
