@@ -43,6 +43,7 @@ export default async function handle(req, res) {
             title: req.body.title,
             description: req.body.description,
             completed: req.body.completed,
+            dueDate: req.body.dueDate,
           },
         });
         res.status(204).json();
