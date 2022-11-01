@@ -26,6 +26,9 @@ export function CheckListItem({ item, onBlur }) {
   const createdDate = new Date(new Date(itemState.createdAt) - timezoneOffset)
     .toISOString()
     .slice(0, 10);
+  const dueDate = new Date(new Date(itemState.dueDate) - timezoneOffset)
+    .toISOString()
+    .slice(0, 10);
 
   const updateItem = async () => {
     const response = await fetch(`/api/todos?id=${itemState.id}`, {
@@ -82,11 +85,7 @@ export function CheckListItem({ item, onBlur }) {
           <Form.Control
             type="date"
             name="dueDate"
-            defaultValue={
-              itemState.dueDate
-                ? new Date(itemState.dueDate).toISOString().split("T")[0]
-                : ""
-            }
+            defaultValue={itemState.dueDate ? dueDate : ""}
             onChange={dueDateSubmit}
           />
           <Form.Control
