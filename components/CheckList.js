@@ -13,12 +13,14 @@ export function CheckListItem({ item, onBlur }) {
   const [itemState, setItemState] = useState(item);
   const timezoneOffset = new Date().getTimezoneOffset() * 60000;
 
+  // Handles item being updated e.g. title change, completed change...
   useEffect(() => {
     if (itemState?.id) {
       updateItem();
     }
   }, [itemState]);
 
+  // Handles the item being deleted
   if (!itemState) {
     return null;
   }
@@ -29,6 +31,23 @@ export function CheckListItem({ item, onBlur }) {
   const dueDate = new Date(new Date(itemState.dueDate) - timezoneOffset)
     .toISOString()
     .slice(0, 10);
+
+  // set due date color based on how close it is to today
+  const today = new Date(new Date() - timezoneOffset)
+    .toISOString()
+    .slice(0, 10);
+  const daysUntilDue = Math.floor(
+    (new Date(dueDate) - new Date(today)) / (1000 * 60 * 60 * 24)
+  );
+
+  let dueDateColor = "";
+  if (itemState.dueDate) {
+    if (daysUntilDue < 0) {
+      dueDateColor = "bg-danger";
+    } else if (daysUntilDue < 7) {
+      dueDateColor = "bg-warning";
+    }
+  }
 
   const updateItem = async () => {
     const response = await fetch(`/api/todos?id=${itemState.id}`, {
@@ -86,6 +105,7 @@ export function CheckListItem({ item, onBlur }) {
             type="date"
             name="dueDate"
             defaultValue={itemState.dueDate ? dueDate : ""}
+            className={dueDateColor}
             onChange={dueDateSubmit}
           />
           <Form.Control
