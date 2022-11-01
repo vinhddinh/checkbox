@@ -35,7 +35,7 @@ export default function Home({ todos, emailToQuery }) {
   const [todosState, setTodosState] = useState(todos);
   const [todosToDisplay, setTodosToDisplay] = useState(todos);
   const [filter, setFilter] = useState([]);
-  const [sort, setSort] = useState("dueDate");
+  const [sort, setSort] = useState("id");
   // Stores the todosState "underneath", and display filtered todos
 
   useEffect(() => {
