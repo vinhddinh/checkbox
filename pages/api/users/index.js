@@ -1,15 +1,8 @@
 import prisma from "/prisma/client";
 
 export default async function handle(req, res) {
+  // This is the only route that is not protected
   switch (req.method) {
-    case "GET":
-      try {
-        const users = await prisma.user.findMany();
-        res.status(200).json(users);
-      } catch (e) {
-        res.status(500).json({ error: e });
-      }
-      break;
     case "POST":
       try {
         const user = await prisma.user.create({
@@ -28,7 +21,7 @@ export default async function handle(req, res) {
       }
       break;
     default:
-      res.setHeader("Allow", ["GET", "POST"]);
+      res.setHeader("Allow", ["POST"]);
       res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
