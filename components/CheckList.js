@@ -41,11 +41,13 @@ export function CheckListItem({ item, onBlur }) {
   );
 
   let dueDateColor = "";
-  if (itemState.dueDate) {
-    if (daysUntilDue < 0) {
-      dueDateColor = "bg-danger";
-    } else if (daysUntilDue < 7) {
-      dueDateColor = "bg-warning";
+  if (!itemState.completed) {
+    if (itemState.dueDate) {
+      if (daysUntilDue < 0) {
+        dueDateColor = "bg-danger";
+      } else if (daysUntilDue < 7) {
+        dueDateColor = "bg-warning";
+      }
     }
   }
 
