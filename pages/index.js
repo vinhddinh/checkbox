@@ -1,11 +1,12 @@
 import Head from "next/head";
 import { getSession, useSession } from "next-auth/react";
+import prisma from "/prisma/client";
+import { useEffect, useState } from "react";
+
 import NavBar from "/components/Navbar";
 import CheckList from "/components/CheckList";
 import SearchBar from "/components/SearchBar";
 import { Container, Row } from "react-bootstrap";
-import { useEffect, useState } from "react";
-
 // load todos server side
 // because if a user is not logged in, session returns null
 // we want to load the todos of a default email, "public@dinh.cc" in this case
