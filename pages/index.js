@@ -33,11 +33,63 @@ export default function Home({ todos, emailToQuery }) {
   const { data: session } = useSession();
   const [todosState, setTodosState] = useState(todos);
   const [todosToDisplay, setTodosToDisplay] = useState(todos);
+  const [filter, setFilter] = useState([]);
+  const [sort, setSort] = useState("dueDate");
   // Stores the todosState "underneath", and display filtered todos
 
   useEffect(() => {
     setTodosToDisplay(todosState);
   }, [todosState]);
+
+  useEffect(() => {
+    let filteredTodos = todosState;
+
+    if (filter.search) {
+      filteredTodos = filteredTodos.filter((todo) =>
+        todo.title.toLowerCase().includes(filter.search.toLowerCase())
+      );
+    }
+
+    switch (filter.by) {
+      case "completed":
+        filteredTodos = filteredTodos.filter((todo) => todo.completed);
+        break;
+      case "incomplete":
+        filteredTodos = filteredTodos.filter((todo) => !todo.completed);
+        break;
+      default:
+        break;
+    }
+
+    switch (sort) {
+      case "dueDate":
+        filteredTodos = filteredTodos.sort((a, b) => {
+          if (a.dueDate < b.dueDate) {
+            return -1;
+          } else if (a.dueDate > b.dueDate) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+        break;
+      case "createdAt":
+        filteredTodos = filteredTodos.sort((a, b) => {
+          if (a.createdAt < b.createdAt) {
+            return -1;
+          } else if (a.createdAt > b.createdAt) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+        break;
+      default:
+        break;
+    }
+
+    setTodosToDisplay(filteredTodos);
+  }, [filter, sort, todosState]);
 
   // requests a new todo object from the server before rendering it
   async function addTodo() {
@@ -58,16 +110,6 @@ export default function Home({ todos, emailToQuery }) {
     setTodosState([...todosState, TodoFromServer]);
   }
 
-  async function onSearch(event) {
-    setTodosToDisplay(
-      todosState.filter((todo) => {
-        return todo.title
-          .toLowerCase()
-          .includes(event.target.value.toLowerCase());
-      })
-    );
-  }
-
   async function reloadTodos() {
     const response = await fetch(`/api/users/${emailToQuery}/todos`);
     const todosFromServer = await response.json();
@@ -83,8 +125,13 @@ export default function Home({ todos, emailToQuery }) {
       </Head>
       <main className="main">
         <Container className="d-flex flex-column">
-          <SearchBar onChange={onSearch} onFocus={reloadTodos} />
           <NavBar session={session} />
+          <SearchBar
+            onFocus={reloadTodos}
+            filter={filter}
+            setFilter={setFilter}
+            setSort={setSort}
+          />
           <CheckList items={todosToDisplay} session={session} />
           <Row className="whitespace" onClick={addTodo} />
         </Container>
