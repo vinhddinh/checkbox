@@ -72,9 +72,12 @@ export function CheckListItem({ item, onBlur }) {
 
   function dueDateSubmit(event) {
     let newDueDateString = null;
-    if (event.target.value !== "") {
-      newDueDateString = event.target.value;
+    if (event.target.value) {
+      newDueDateString = new Date(event.target.value).toISOString();
+    } else {
+      newDueDateString = null;
     }
+    console.log(event.target.value);
     setItemState({
       ...itemState,
       dueDate: newDueDateString,
