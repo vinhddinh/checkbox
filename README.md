@@ -12,7 +12,7 @@ Once you have installed both Git and Node.js:
 - Open PowerShell in that folder (Shift + Right Click -> Open PowerShell window here)
 - Clone the repository by running the following command:
 ```
-git clone https://github.com/misar-naeem/StudyGroup.git
+git clone https://github.com/vinhddinh/checkbox.git
 ```
 ### 3. Install dependencies
 Now that you have cloned the repository, you need to install the dependencies. To do so, open the `checkbox` folder in PowerShell (Shift + Right Click -> Open PowerShell window here) and run the following command:
