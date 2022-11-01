@@ -1,6 +1,16 @@
+import { authOptions } from "/pages/api/auth/[...nextauth]";
+import { unstable_getServerSession } from "next-auth/next";
 import prisma from "/prisma/client";
 
 export default async function handle(req, res) {
+  const session = await unstable_getServerSession(req, res, authOptions);
+  let emailToQuery = req?.body?.email;
+
+  // If no session, add todos to email "public@dinh.cc"
+  if (!session) {
+    emailToQuery = "public@dinh.cc";
+  }
+
   switch (req.method) {
     case "GET":
       try {
@@ -23,7 +33,7 @@ export default async function handle(req, res) {
             completed: req.body.completed,
             user: {
               connect: {
-                email: req.body.email,
+                email: emailToQuery,
               },
             },
           },

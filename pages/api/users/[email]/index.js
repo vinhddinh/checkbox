@@ -1,6 +1,18 @@
+import { authOptions } from "/pages/api/auth/[...nextauth]";
+import { unstable_getServerSession } from "next-auth/next";
 import prisma from "/prisma/client";
 
 export default async function handle(req, res) {
+  const session = await unstable_getServerSession(req, res, authOptions);
+
+  // Only allow a user to access their own account operations on this endpoint
+
+  session ? {} : res.status(401).json({ error: "Unauthorized" });
+  if (session?.user?.email !== req.query.email) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+
   switch (req.method) {
     case "GET":
       try {
