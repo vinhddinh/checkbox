@@ -63,6 +63,9 @@ export default function Home({ todos, emailToQuery }) {
     }
 
     switch (sort) {
+      case "id":
+        filteredTodos = filteredTodos.sort((a, b) => a.id - b.id);
+        break;
       case "dueDate":
         filteredTodos = filteredTodos.sort((a, b) => {
           if (a.dueDate < b.dueDate) {

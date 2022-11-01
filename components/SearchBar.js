@@ -38,6 +38,7 @@ export function Sort({ setSort }) {
         as="select"
         onChange={(event) => setSort(event.target.value)}
       >
+        <option value="id">ID</option>
         <option value="dueDate">Due Date</option>
         <option value="createdAt">Created Date</option>
       </FormControl>
