@@ -70,7 +70,7 @@ export function CheckListItem({ item, onBlur }) {
     }
   };
 
-  function dueDateSubmit(event) {
+  function dueDateChange(event) {
     let newDueDateString = null;
     if (event.target.value) {
       newDueDateString = new Date(event.target.value).toISOString();
@@ -115,7 +115,7 @@ export function CheckListItem({ item, onBlur }) {
             name="dueDate"
             defaultValue={itemState.dueDate ? dueDate : ""}
             className={dueDateColor}
-            onChange={dueDateSubmit}
+            onChange={dueDateChange}
           />
           <Form.Control
             type="date"
